@@ -1,0 +1,54 @@
+/* FULL-SCREEN BACKGROUND IMAGE */
+body {
+  background: url('/assets/library.png') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0; /* remove browser default spacing */
+  padding: 0;
+}
+
+.start-wrapper {
+  background: transparent;
+}
+
+.right {
+  width: 50%;
+  display: flex;
+  align-items: center;       /* vertical center */
+  justify-content: center;   /* horizontal center */
+}
+
+
+.field label,
+.right h3 {
+  color: black;
+  font-weight: bold;
+  text-shadow: 0 0 3px white;
+}
+
+.left h2 {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.login-box {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.25);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  /* Size constraints for a tight box */
+  min-width: 320px;
+  max-width: 380px;
+}
+.field label,
+.login-box h3 {
+  color: black;
+  font-weight: bold;
+  text-shadow: 0 0 3px white;
+}
+

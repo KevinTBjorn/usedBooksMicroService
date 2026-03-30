@@ -1,0 +1,230 @@
+services:
+  orderservice:
+    build:
+      context: .
+      dockerfile: OrderService/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+      ConnectionStrings__OrdersDb: "Host=postgresOrderService;Port=5432;Database=ordersdb;Username=postgres;Password=postgrespw"
+      RabbitMq__Host: "rabbitmq"
+      RabbitMq__Port: "5672"
+      RabbitMq__Username: "appuser"
+      RabbitMq__Password: "apppassword"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgresOrderService:
+        condition: service_healthy
+    networks:
+      - gtlib-net
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: appuser
+      RABBITMQ_DEFAULT_PASS: apppassword
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gtlib-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - gtlib-net
+
+  redis:
+    image: redis:7
+    hostname: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - gtlib-net
+
+  authservice:
+    build:
+      context: ./AuthService
+      dockerfile: Dockerfile
+    ports:
+      - "7001:8080" # host:container
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+      ConnectionStrings__DefaultConnection: >
+        Server=sqlserver,1433;Database=LibraryAuthDb;
+        User=sa;Password=Password123!;Encrypt=False;TrustServerCertificate=True;
+    depends_on:
+      - sqlserver
+    networks:
+      - gtlib-net
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Password123!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql 
+    networks:
+      - gtlib-net
+  
+  postgres:
+    image: postgres:15
+    hostname: postgres
+    environment:
+      POSTGRES_DB: warehouse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespw
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - gtlib-net
+
+  warehouseservice:
+    build:
+      context: .
+      dockerfile: ./WarehouseService/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_started
+    environment:
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: appuser
+      RabbitMq__Password: apppassword
+      RabbitMq__RetryCount: "10"
+      RabbitMq__RetryDelayMs: "3000"
+      ConnectionStrings__WarehouseDb: "Host=postgres;Port=5432;Database=warehouse;Username=postgres;Password=postgrespw"
+      ASPNETCORE_URLS: http://0.0.0.0:80
+    ports:
+      - "5001:80"
+    networks:
+      - gtlib-net
+
+  searchservice:
+    build:
+      context: .
+      dockerfile: SearchService/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: appuser
+      RabbitMq__Password: apppassword
+      RabbitMq__RetryCount: "10"
+      RabbitMq__RetryDelayMs: "3000"
+      Redis__Connection: "redis:6379"
+      ASPNETCORE_URLS: http://0.0.0.0:80
+    ports:
+      - "5002:80"
+    networks:
+      - gtlib-net
+
+  apigateway:
+    build:
+      context: ./APIGatewayOcelot
+      dockerfile: Dockerfile
+    ports:
+      - "5139:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+    depends_on:
+      - authservice
+      - warehouseservice
+      - addbookservice
+    networks:
+      - gtlib-net
+
+  addbookservice:
+    build:
+      context: .
+      dockerfile: AddBookService/Dockerfile
+    ports:
+      - "5030:8080" # matches what you had locally (AddBookService on 5030)
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - gtlib-net
+
+  postgresOrderService:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ordersdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespw
+    ports:
+      - "5234:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gtlib-net
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alert_rules.yml:/etc/prometheus/alert_rules.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - gtlib-net
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - gtlib-net
+    depends_on:
+      - prometheus
+
+networks:
+  gtlib-net:
+    driver: bridge
+
+volumes:
+    sql_data:
+    auth_dataprotection:
+    rabbitmq_data:
+    redis_data:
+    postgres_data:

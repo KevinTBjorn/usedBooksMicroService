@@ -1,0 +1,12 @@
+groups:
+  - name: health_checks
+    interval: 10s
+    rules:
+      - alert: RabbitMQDown
+        expr: rabbitmq_health_status == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "RabbitMQ is down"
+          description: "AddBookService cannot connect to RabbitMQ."

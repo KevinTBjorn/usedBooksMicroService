@@ -1,0 +1,144 @@
+# Georgia Tech Library Marketplace  
+### Microservice Architecture, Integration & Scalability (C# · RabbitMQ · Docker)
+
+Dette projekt implementerer et event-drevet, distribueret og skalerbart system til et globalt bog-markedsplads-koncept:  
+**Georgia Tech Library Marketplace**. Systemet understøtter upload af bøger, lagerstyring, ordreflow og hurtig søgning af bøger.
+
+Projektet fokuserer på **integration, skalering og microservice-arkitektur**.
+
+---
+
+# 🧭 Arkitektur – Overblik
+
+Systemet består af fire kerne-microservices:
+
+1. **AddBookService** – modtager nye bøger fra brugere  
+2. **WarehouseService** – styrer lager, både brugte og nye bøger  
+3. **SearchService** – read-model, som giver hurtige søgninger  
+4. **OrderService** – håndterer ordrer
+
+Suppleret af:
+
+- **RabbitMQ** (asynkron messaging)
+- **Postgres** (lagerdatabase)
+- **Redis** (read-model database til Search)
+- **API Gateway** (samlet adgangspunkt)
+- **Docker** (containerization & local orchestration)
+
+---
+
+# 🎯 Hvorfor dette design?
+
+Systemet er bygget for at demonstrere:
+
+- **Event-driven integration**  
+- **Asynkron kommunikation mellem microservices**  
+- **Eventual consistency** frem for stærk konsistens  
+- **Skalerbarhed via messaging patterns**  
+- **Løs kobling** af domæner og services  
+- **Fail-isolation** og høj tilgængelighed  
+- **Container-baseret deployment**  
+
+Resultatet er en arkitektur, der er robust, let at videreudvikle, og kan modstå trafikspidser ved semesterstart.
+
+---
+
+# 🐇 Hvorfor RabbitMQ?
+
+RabbitMQ bruges som **message bus**, fordi:
+
+- Det understøtter **Publish/Subscribe**, **Message Queue**, **Topic Routing** og **Competing Consumers**  
+- Det er let at integrere i C# med `RabbitMQ.Client`  
+- Det kører perfekt i Docker  
+- Det understøtter høj throughput for event-drevne systemer  
+- Det giver løs kobling og mulighed for horisontal skalering  
+
+**Teoretisk dækker det flere Enterprise Integration Patterns** (Hohpe & Woolf), bl.a.:  
+- *Event Message*  
+- *Message Queue*  
+- *Publish/Subscribe*  
+- *Content-Based Router*  
+- *Message Channel*  
+
+Disse mønstre er grundlæggende for store distribuerede systemer.
+
+---
+
+# 🧱 Hvorfor microservices?
+
+**Microservices** giver:
+
+### ✔ Løs kobling  
+Hver service ejer sin egen database og sit eget domæne.
+
+### ✔ Uafhængig deployment  
+Man kan opdatere SearchService uden nedetid i OrderService.
+
+### ✔ Skalering hvor det giver mening  
+Warehouse kan skaleres mere end AddBookService.
+
+### ✔ Isolation af fejl  
+En fejl i SearchService lammer ikke hele systemet.
+
+### ✔ Let at eksperimentere med nye features  
+Passer til forretningskravet om kontinuerlig innovation.
+
+---
+
+# 📡 Hvorfor asynkron messaging?
+
+Vi bruger messaging i stedet for direkte REST-kald mellem services, fordi:
+
+- Systemet skal kunne håndtere **spidsbelastning**  
+- Services skal kunne køre **uafhængigt** af hinanden  
+- Det muliggør **eventual consistency**  
+- Fejl kan isoleres (hvis en service er nede → beskeder gemmes i kø)  
+- Det er en **skalerbar måde** at integrere store systemer på  
+- REST-kald skalerer dårligt når mange services afhænger af hinanden
+
+---
+
+# 📚 Hvorfor Postgres + Redis?
+
+## **Postgres (Warehouse DB)**
+- relationel struktur passer perfekt til lagerstyring
+- ACID, stabilt og modent
+- stærk integritet over stock-data
+
+## **Redis (Search Read-Model)**
+- ekstrem høj læsehastighed
+- lav latency (<5 ms)
+- perfekt til *simple opslagsqueries*  
+- passer strategisk til **CQRS**-mønsteret  
+- SearchService skal altid være hurtig
+
+### Hvorfor ikke én database?
+- Søgning kræver performance, lager kræver integritet  
+- Microservices bør eje *deres* data  
+- CQRS gør løsningen skalerbar i praksis  
+- Event-driven sync gør dem konsistente "eventually"
+
+---
+
+# 🧠 Hvorfor CQRS?
+
+SearchService er en **read-only model**, og derfor er det oplagt:
+
+- At skille **read** (SearchService) og **write** (WarehouseService) ad  
+- At optimere *reads* for fart (Redis)  
+- At optimere *writes* for integritet (Postgres)
+
+CQRS gør systemet:
+
+- hurtigere  
+- lettere at teste  
+- naturligt kompatibelt med event-driven integration  
+
+---
+
+# 📈 Hvordan skalerer systemet?
+
+Denne arkitektur er designet til at skaleres **horisontalt**, dvs. ved at øge antal instanser.
+
+### 🔥 WarehouseService kan skaleres med *Competing Consumers*
+Flere Warehouse-instanser kan lytte på samme queue:

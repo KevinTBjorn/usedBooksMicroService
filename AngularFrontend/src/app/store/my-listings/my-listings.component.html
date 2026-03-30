@@ -1,0 +1,29 @@
+<h2>My Listings</h2>
+
+<div *ngIf="loading">Loading your listings...</div>
+<div *ngIf="error && !loading" class="error">{{ error }}</div>
+
+<div *ngIf="!loading && !error && listings.length === 0">
+  <p>You have no listings yet (for the demo user).</p>
+</div>
+
+<div *ngIf="!loading && !error && listings.length > 0">
+  <table class="listings-table">
+    <thead>
+    <tr>
+      <th>BookId</th>
+      <th>Condition</th>
+      <th>Quantity</th>
+      <th>Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let l of listings">
+      <td>{{ l.bookId }}</td>
+      <td>{{ l.condition }}</td>
+      <td>{{ l.quantity }}</td>
+      <td>{{ l.price }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

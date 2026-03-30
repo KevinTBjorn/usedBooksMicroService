@@ -1,0 +1,34 @@
+<div class="start-wrapper">
+  <div class="left">
+    <h2>Georgia Tech Library</h2>
+    <img src="/assets/georg.png" alt="Georgia Tech Seal" />
+  </div>
+
+  <div class="right">
+    <div class="login-box">
+      <h3>Login</h3>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+        <div class="field">
+          <label for="userNameOrEmail">Username or Email</label>
+          <input id="userNameOrEmail" type="text" formControlName="userNameOrEmail" />
+
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" formControlName="password" />
+        </div>
+
+        <div class="buttons">
+          <button type="submit">Login</button>
+
+          <button type="button" class="create-user-btn" routerLink="/create-user">Create account</button>
+        </div>
+
+        <p *ngIf="error" class="error">{{ error }}</p>
+      </form>
+
+    </div>
+  </div>
+</div>

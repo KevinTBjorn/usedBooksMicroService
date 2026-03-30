@@ -1,0 +1,95 @@
+.sell-form {
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field-row,
+.field-column {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: white;
+  text-shadow: 0 0 3px black; /* keep shadow everywhere EXCEPT popup */
+}
+
+input,
+select,
+textarea {
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+button[type="submit"] {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+/* ---------------------------- */
+/* 🔹 POPUP — ONLY BLACK TEXT   */
+/* ---------------------------- */
+
+.recap-popup {
+  position: fixed;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  padding: 22px 28px;
+  width: 360px;
+  border-radius: 12px;
+  text-align: left;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
+  z-index: 10000;
+  animation: recapFadeIn 0.2s ease-out;
+
+  color: #000;                 /* 🔥 popup text = black */
+  text-shadow: none !important; /* 🔥 remove shadow ONLY in popup */
+}
+
+.recap-popup h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #000;
+  text-shadow: none !important;
+}
+
+.recap-popup p {
+  margin: 3px 0;
+  font-size: 14px;
+  color: #000;
+  text-shadow: none !important;
+}
+
+.recap-popup .desc {
+  margin-top: 8px;
+}
+
+.redirect-note {
+  margin-top: 10px;
+  font-style: italic;
+  text-align: center;
+  font-size: 13px;
+  color: #000;
+  text-shadow: none !important;
+}
+
+@keyframes recapFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

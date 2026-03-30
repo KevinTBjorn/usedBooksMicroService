@@ -1,0 +1,40 @@
+<h2>Buy Book</h2>
+
+<div *ngIf="!bookId">
+  <p>No book selected.</p>
+  <p>
+    Go to the <a routerLink="/store">Store</a> and click <strong>View sellers</strong> on a book.
+  </p>
+</div>
+
+<div *ngIf="bookId">
+  <p>Book ID: {{ bookId }}</p>
+
+  <div *ngIf="loading">Loading sellers...</div>
+  <div *ngIf="error && !loading" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && listings.length === 0">
+    <p>No active listings for this book.</p>
+  </div>
+
+  <div *ngIf="!loading && !error && listings.length > 0">
+    <table class="listings-table">
+      <thead>
+      <tr>
+        <th>Seller (UserId)</th>
+        <th>Condition</th>
+        <th>Quantity</th>
+        <th>Price</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let l of listings">
+        <td>{{ l.userId }}</td>
+        <td>{{ l.condition }}</td>
+        <td>{{ l.quantity }}</td>
+        <td>{{ l.price }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

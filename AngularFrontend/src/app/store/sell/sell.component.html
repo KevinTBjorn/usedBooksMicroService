@@ -1,0 +1,137 @@
+<!-- MEMBER (customer) view -->
+<div *ngIf="isMember">
+  <h2>Sell a Book</h2>
+  <p>Enter the ISBN to look up the book, then confirm and set your listing details.</p>
+
+  <div class="status-messages">
+    <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="loading" *ngIf="loadingPreview || creatingListing">
+      {{ loadingPreview ? 'Looking up book…' : 'Creating your listing…' }}
+    </div>
+  </div>
+
+  <!-- STEP 1: ISBN lookup -->
+  <section class="step-section">
+    <h3>Step 1 – Look up the book by ISBN</h3>
+
+    <form [formGroup]="isbnForm" (ngSubmit)="lookupBook()" class="sell-form">
+      <div class="field-row">
+        <label for="isbn">ISBN*</label>
+        <input id="isbn" type="text" formControlName="isbn" />
+      </div>
+
+      <button type="submit" [disabled]="loadingPreview">
+        {{ loadingPreview ? 'Looking up…' : 'Find Book' }}
+      </button>
+    </form>
+  </section>
+
+  <!-- Preview result -->
+  <section *ngIf="preview" class="preview-section">
+    <h3>Preview – Is this the right book?</h3>
+
+    <div class="book-preview-card">
+      <div class="cover" *ngIf="preview.imageUrl">
+        <img [src]="preview?.imageUrl" [alt]="preview?.title" />
+      </div>
+
+      <div class="info">
+        <h4>{{ preview?.title }}</h4>
+        <p class="author">by {{ preview?.author }}</p>
+        <p class="isbn">ISBN: {{ preview?.isbn }}</p>
+
+        <p class="genre" *ngIf="preview.genre">
+          Genre: <strong>{{ preview?.genre }}</strong>
+        </p>
+
+        <p class="description" *ngIf="preview.description">
+          {{ preview?.description }}
+        </p>
+      </div>
+    </div>
+
+    <div class="preview-actions">
+      <button type="button" (click)="confirmPreview()">Yes, this is correct</button>
+      <button type="button" (click)="resetPreview()">No, search again</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: listing details -->
+  <section *ngIf="preview && previewConfirmed" class="step-section">
+    <h3>Step 2 – Set condition, price and quantity</h3>
+
+    <form [formGroup]="listingForm" (ngSubmit)="createListing()" class="sell-form">
+
+      <div class="field-row">
+        <label for="condition">Condition*</label>
+        <select id="condition" formControlName="condition">
+          <option value="New">New</option>
+          <option value="LikeNew">Like New</option>
+          <option value="Used">Used</option>
+          <option value="Worn">Worn</option>
+        </select>
+      </div>
+
+      <div class="field-row">
+        <label for="price">Price*</label>
+        <input id="price" type="number" formControlName="price" />
+      </div>
+
+      <div class="field-row">
+        <label for="quantity">Quantity*</label>
+        <input id="quantity" type="number" formControlName="quantity" />
+      </div>
+
+      <button type="submit" [disabled]="creatingListing || listingForm.invalid">
+        {{ creatingListing ? 'Creating listing…' : 'Create Listing' }}
+      </button>
+    </form>
+  </section>
+</div>
+
+<!-- ADMIN / EMPLOYEE view -->
+<div *ngIf="isAdminOrEmployee">
+  <h2>Admin / Employee – Sell / Listings View</h2>
+  <p>
+    As staff, you typically manage and moderate book listings rather than
+    posting personal items.
+  </p>
+
+  <ul>
+    <li>Review and approve member listings</li>
+    <li>Remove inappropriate or duplicate listings</li>
+    <li>Inspect listing details for support and auditing</li>
+  </ul>
+
+  <p>
+    In a full implementation, this view would show tools for searching,
+    filtering and moderating listings. The important point is that the same
+    route <code>/store/sell</code> renders different content depending on
+    whether the logged-in user is a Member or Admin/Employee.
+  </p>
+</div>
+
+<!-- Fallback -->
+<div *ngIf="!isMember && !isAdminOrEmployee">
+  <h2>Sell</h2>
+  <p>You do not have permission to sell books.</p>
+</div>
+
+<!-- Recap popup after successful creation -->
+<div class="recap-popup" *ngIf="showRecap && recapData">
+  <h3>Book added to My Listings</h3>
+
+  <p><strong>Title:</strong> {{ recapData?.title }}</p>
+  <p><strong>Author:</strong> {{ recapData?.author }}</p>
+  <p><strong>ISBN:</strong> {{ recapData?.isbn }}</p>
+  <p><strong>Genre:</strong> {{ recapData?.genre }}</p>
+  <p><strong>Condition:</strong> {{ recapData?.condition }}</p>
+  <p><strong>Price:</strong> {{ recapData?.price }}</p>
+  <p><strong>Quantity:</strong> {{ recapData?.quantity }}</p>
+
+  <p class="desc"><strong>Description:</strong> {{ recapData?.description }}</p>
+
+  <p class="redirect-note">Redirecting to My Listings…</p>
+</div>
+

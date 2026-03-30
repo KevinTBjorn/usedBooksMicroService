@@ -1,0 +1,33 @@
+<div class="store-topbar">
+  <div class="logo" routerLink="/store">Georgia Tech Library</div>
+
+  <nav class="nav-links">
+    <a routerLink="/store/buy" routerLinkActive="active">Buy</a>
+    <a routerLink="/store/sell" routerLinkActive="active">Sell</a>
+    <a routerLink="/store/my-listings" routerLinkActive="active">My Listings</a>
+    <a routerLink="/store/notifications" routerLinkActive="active" class="icon-link">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+           stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+        <path d="M13.73 21a2 2 0 01-3.46 0"></path>
+      </svg>
+    </a>
+
+    <button class="icon-link logout-icon" (click)="logout()" aria-label="Logout">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+           stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Door/Panel -->
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+        <!-- Arrow pointing out -->
+        <path d="M10 17l5-5-5-5" />
+        <path d="M5 12h10" />
+      </svg>
+    </button>
+
+  </nav>
+</div>
+
+<div class="page-body">
+  <router-outlet></router-outlet>
+</div>
+

@@ -1,0 +1,180 @@
+## ---------------------------
+##   GLOBAL VISUAL STUDIO / .NET IGNORE
+## ---------------------------
+
+# VS user files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS cache
+.vs/
+
+# Build output
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+
+# Debug/Release folders
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# Logs
+*.log
+logs/
+log/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+# EF Core Migrations snapshot
+*ModelSnapshot.cs
+
+# Auto-generated files
+*.cache
+*.pdb
+*.mdb
+
+# Profiling
+*.psess
+*.vsp
+*.vspx
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# JetBrains Rider
+.idea/
+.idea/*
+
+# DotCover
+*.dotCover
+
+# CodeRush
+.cr/personal
+
+# NCrunch
+_ncrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# Backups
+*.bak
+*.old
+*.orig
+
+# Temp files
+*.tmp
+*.temp
+
+# SQL Local DB
+*.mdf
+*.ldf
+
+# Test output
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# OS specific
+Thumbs.db
+ehthumbs.db
+.DS_Store
+desktop.ini
+
+# Environment files
+.env
+*.env.local
+
+
+## ---------------------------
+##   ANGULAR / FRONTEND
+## ---------------------------
+
+node_modules/
+dist/
+.angular/
+.angular/cache/
+npm-debug.log*
+yarn-error.log*
+
+
+## ---------------------------
+##   DOCKER
+## ---------------------------
+
+docker-compose.override.yml
+*.dockerignore
+
+
+## ---------------------------
+##   PYTHON (if used)
+## ---------------------------
+
+venv/
+__pycache__/
+
+
+## ---------------------------
+##   PROJECT-SPECIFIC IGNORES
+## ---------------------------
+
+# Ignore development-only markdowns / test inputs
+/search_warehouse_spec.md
+
+# Sensitive configs
+/AuthService/appsettings.json
+
+
+# Python venv (if used)
+venv/
+__pycache__/
+/AddBookService/obj/AddBookService.csproj.nuget.dgspec.json
+/AddBookService/obj/AddBookService.csproj.nuget.g.props
+/AddBookService/obj/project.assets.json
+/AddBookService/obj/project.nuget.cache
+/apigateway/obj/ApiGateway.csproj.nuget.dgspec.json
+/apigateway/obj/ApiGateway.csproj.nuget.g.props
+/apigateway/obj/project.assets.json
+/apigateway/obj/project.nuget.cache
+/Domain/obj/Domain.csproj.nuget.dgspec.json
+/Domain/obj/Domain.csproj.nuget.g.props
+/Domain/obj/project.assets.json
+/Domain/obj/project.nuget.cache
+/OrderService/obj/OrderService.csproj.nuget.dgspec.json
+/OrderService/obj/OrderService.csproj.nuget.g.props
+/OrderService/obj/project.assets.json
+/OrderService/obj/project.nuget.cache
+/SearchService/obj/project.assets.json
+/SearchService/obj/project.nuget.cache
+/SearchService/obj/SearchService.csproj.nuget.dgspec.json
+/SearchService/obj/SearchService.csproj.nuget.g.props
+/WarehouseService/obj/project.assets.json
+/WarehouseService/obj/project.nuget.cache
+/WarehouseService/obj/WarehouseService.csproj.nuget.dgspec.json
+/WarehouseService/obj/WarehouseService.csproj.nuget.g.props
+# END
+/Accept
+/GET
+/Host
+/User-Agent
+/BenchmarkSuite1/BenchmarkDotNet.Artifacts

@@ -1,0 +1,44 @@
+<div class="store-content">
+  <h1>Book Store</h1>
+  <p>Browse books available in the warehouse service.</p>
+
+  <div *ngIf="loading">Loading books...</div>
+  <div *ngIf="error && !loading" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && books.length === 0">
+    <p>No books found.</p>
+  </div>
+
+  <div *ngIf="!loading && !error && books.length > 0">
+    <table class="listings-table">
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Year</th>
+        <th>Genre</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let b of books">
+        <td>{{ b.title }}</td>
+        <td>{{ b.author }}</td>
+        <td>{{ b.isbn }}</td>
+        <td>{{ b.year }}</td>
+        <td>{{ b.genre }}</td>
+        <td>
+          <button (click)="viewSellers(b)">View sellers</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="pageNumber === 1">Previous</button>
+      <span>Page {{ pageNumber }}</span>
+      <button (click)="nextPage()">Next</button>
+    </div>
+  </div>
+</div>
