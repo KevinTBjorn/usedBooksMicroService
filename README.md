@@ -1,3 +1,28 @@
+## 🛠 Primary Responsibility: `orderservice/`
+The **Order Service** was my main area of focus. I was responsible for the architectural design and implementation of this module.
+
+---
+
+## 👥 Collaborative & Shared Modules
+In addition to the Order Service, I contributed to several other areas of the project alongside my team members:
+
+### 📂 `domain/`
+* **Role:** Co-developer.
+* **Contribution:** Participated in defining the core entities and shared business logic to ensure consistency across services.
+* **Status:** Functional/Core architecture.
+
+### 📂 `notification/`
+* **Role:** Contributor.
+* **Contribution:** Assisted in the initial setup and logic for triggering alerts based on order status changes.
+* **Status:** *In Progress / Partially Functional.*
+
+### 📂 `test/`
+* **Role:** Contributor.
+* **Contribution:** Developed unit tests specifically for the `orderservice` and assisted in debugging cross-service integration tests.
+* **Status:** Ongoing (focus on service-specific stability).
+
+---
+
 # Prerequisites
 
 Make sure the following tools are installed on your system:
