@@ -1,7 +1,24 @@
 ## 🛠 Primary Responsibility: `orderservice/`
-The **Order Service** was my main area of focus. I was responsible for the architectural design and implementation of this module.
+The **Order Service** was my main area of focus. I was responsible for the architectural design and implementation of this module: [OrderService Implementation](./OrderService)
 
 ---
+## 🏗️ Architecture & Infrastructure
+
+This project demonstrates an **Event-Driven Microservice Architecture** utilizing the **Choreography-based Saga pattern** to manage distributed transactions.
+
+![Create Order Transaction](./createOrdreTransaction.png)
+
+### Technical Highlights:
+
+* **Message Broker:** The system uses **RabbitMQ** for asynchronous messaging between services, ensuring loose coupling and high resiliency.
+* **Infrastructure-as-Code:** The entire environment—including RabbitMQ, databases, and microservices—is orchestrated via Docker for easy deployment and local development.
+    * View the setup here: [docker-compose.yml](./docker-compose.yml)
+* **Distributed Transactions:** Eventual consistency is maintained across independent service databases through event-driven flows.
+* **Compensation Logic:** Includes a "Rollback" mechanism (Compensation Message Queue) to handle failures, such as payment rejections or inventory issues, ensuring the system returns to a consistent state.
+
+### Code Implementation:
+
+* **Order Handling:** The core logic for order processing and event publishing can be found here: [OrderService Implementation](./OrderService)
 
 ## 👥 Collaborative & Shared Modules
 In addition to the Order Service, I contributed to several other areas of the project alongside my team members:
